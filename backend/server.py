@@ -1,8 +1,10 @@
 import json
 import sqlite3
 from contextlib import closing
+from datetime import date
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
+from urllib.parse import parse_qs
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -45,6 +47,51 @@ class Handler(BaseHTTPRequestHandler):
             self.send_content((FRONTEND / "index.html").read_bytes(), "text/html; charset=utf-8")
             return
         self.send_error(404)
+
+    def do_POST(self):
+        if self.path != "/api/tasks":
+            self.send_error(404)
+            return
+        if self.headers.get_content_type() != "application/x-www-form-urlencoded":
+            self.send_error(415)
+            return
+        try:
+            size = int(self.headers.get("Content-Length", "0"))
+            if not 0 < size <= 65536:
+                self.send_error(400, "Taille de formulaire invalide.")
+                return
+            fields = parse_qs(
+                self.rfile.read(size).decode("utf-8"), keep_blank_values=True,
+                errors="strict", max_num_fields=3,
+            )
+        except ValueError:
+            self.send_error(400, "Formulaire invalide.")
+            return
+
+        title = fields.get("title", [""])[0].strip()
+        description = fields.get("description", [""])[0].strip()
+        due_date = fields.get("due_date", [""])[0]
+        if not title:
+            self.send_error(400, "Le titre est obligatoire.")
+            return
+        if len(title) > 120 or len(description) > 4000:
+            self.send_error(400, "Le titre ou la description est trop long.")
+            return
+        if due_date:
+            try:
+                if date.fromisoformat(due_date).isoformat() != due_date:
+                    raise ValueError
+            except ValueError:
+                self.send_error(400, "La date doit être valide (AAAA-MM-JJ).")
+                return
+        with closing(sqlite3.connect(DATABASE)) as connection, connection:
+            connection.execute(
+                "INSERT INTO tasks (title, description, due_date) VALUES (?, ?, ?)",
+                (title, description, due_date),
+            )
+        self.send_response(303)
+        self.send_header("Location", "/")
+        self.end_headers()
 
 
 if __name__ == "__main__":
