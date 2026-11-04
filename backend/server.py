@@ -36,13 +36,15 @@ class Handler(BaseHTTPRequestHandler):
             with closing(sqlite3.connect(DATABASE)) as connection:
                 connection.row_factory = sqlite3.Row
                 rows = connection.execute(
-                    "SELECT title, description, due_date, completed FROM tasks ORDER BY id"
+                    "SELECT title, description, due_date, completed "
+                    "FROM tasks ORDER BY id"
                 )
                 body = json.dumps([dict(row) for row in rows]).encode("utf-8")
             self.send_content(body, "application/json; charset=utf-8")
             return
         if self.path == "/":
-            self.send_content((FRONTEND / "index.html").read_bytes(), "text/html; charset=utf-8")
+            body = (FRONTEND / "index.html").read_bytes()
+            self.send_content(body, "text/html; charset=utf-8")
             return
         self.send_error(404)
 
