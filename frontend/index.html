@@ -4,10 +4,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>GestiTâches</title>
+  <script src="/tasks.js" defer></script>
 </head>
 <body>
   <main>
     <h1>GestiTâches</h1>
+    <section aria-labelledby="tasks-heading">
+      <h2 id="tasks-heading">Mes tâches</h2>
+      <p id="tasks-message" role="status">Chargement…</p>
+      <ul id="tasks"></ul>
+    </section>
     <p>Mon espace de suivi des tâches personnelles.</p>
   </main>
 </body>

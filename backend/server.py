@@ -41,6 +41,9 @@ class Handler(BaseHTTPRequestHandler):
                 body = json.dumps([dict(row) for row in rows]).encode("utf-8")
             self.send_content(body, "application/json; charset=utf-8")
             return
+        if self.path == "/tasks.js":
+            self.send_content((FRONTEND / "tasks.js").read_bytes(), "text/javascript; charset=utf-8")
+            return
         if self.path == "/":
             self.send_content((FRONTEND / "index.html").read_bytes(), "text/html; charset=utf-8")
             return
