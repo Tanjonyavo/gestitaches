@@ -9,6 +9,14 @@
   <main>
     <h1>GestiTâches</h1>
     <p>Mon espace de suivi des tâches personnelles.</p>
+
+    <form method="post" action="/api/tasks">
+      <h2>Ajouter une tâche</h2>
+      <p><label>Titre <input name="title" required maxlength="120"></label></p>
+      <p><label>Description <textarea name="description" maxlength="4000"></textarea></label></p>
+      <p><label>Échéance <input name="due_date" type="date"></label></p>
+      <button type="submit">Ajouter</button>
+    </form>
   </main>
 </body>
 </html>
