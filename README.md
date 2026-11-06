@@ -4,7 +4,7 @@ GestiTâches est une application web de gestion de tâches personnelles. Elle ai
 
 ## Équipe
 
-TD réalisé en solo par [Tanjonyavo](https://github.com/Tanjonyavo), responsable du frontend, du backend et de la configuration du dépôt.
+TD réalisé en collabration avec @zhd97rk6b5-droid [Tanjonyavo](https://github.com/Tanjonyavo).
 
 ## Stratégie de branchement
 
